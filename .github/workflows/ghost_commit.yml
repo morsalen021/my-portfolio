@@ -1,0 +1,31 @@
+name: Shadow Committer Ghost
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # প্রতি ৩০ মিনিট পর পর রান হবে
+  workflow_dispatch: # ম্যানুয়ালি রান করার জন্য
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Ghost Commit
+        run: |
+          date >> activity_log.txt 
+          git config --local user.email "mdmorsalenislam39@gmail.com"
+          git config --local user.name "Morsalen0220"
+          git add activity_log.txt
+          git commit -m "Ghost update: $(date)"
+          
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          # এখানে সরাসরি টোকেন না দিয়ে ভেরিয়েবল ব্যবহার করতে হবে
+          github_token: ${{ secrets.MY_GHOST_TOKEN }}
+          branch: main
